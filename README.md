@@ -362,3 +362,17 @@ Now with your team of miners working at full force, you lay back, relax, and enj
 | :-- |
 
 
+## Troubleshooting
+
+The JaCaMo console sometimes freezes for MacOS users. A way-out is to disable
+the MAS console (line 7), and enable the java.util.logging.ConsoleHandler
+(line 10) in logging.properties (should be combined with running the 
+application from a console):
+
+```properties
+# default Jason MAS Console
+#handlers = jason.runtime.MASConsoleLogHandler, java.util.logging.FileHandler
+
+# To use the ConsoleHandler, use the following line instead.
+handlers= java.util.logging.ConsoleHandler
+```
