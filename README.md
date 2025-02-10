@@ -77,7 +77,7 @@ We will discuss more about BDI agents in Week 5. For the purpose of this tutoria
 In [miner.asl](src/agt/miner.asl), lines 8-13 define the _initial beliefs and goals_ of a miner agent:
 - `ready_to_explore`: the agent believes that it is ready to explore the woods for gold;
 - `depot(0,0)`: the agent believes that the depot is located at (0,0);
-- `!start`: the agent has an initial goal to start, which is similar to the `main` method of a Java program; goals are expressed similarly to beliefs except they are preceeded by an exclamation point (`!`).
+- `!start`: the agent has an initial goal to start, which is similar to the `main` method of a Java program; goals are expressed similarly to beliefs except they are preceded by an exclamation point (`!`).
 
 A BDI agent achieves its goals by executing _plans_ programmed by a developer. A plan has the following form:
 
@@ -186,7 +186,7 @@ You can click on the cells of the Mining World GUI to add gold nuggets to the ma
 
 When an agent receives a percept from the environment, the percept is reflected in the agent's beliefs. While your miner agent is exploring the map, you can again inspect its beliefs as shown above to see the addition of new `gold` beliefs.
 
-Your third task is to create a `@gold_perceived_plan` in [miner.asl](src/agt/miner.asl) to enable the agent to react when it perceives a new gold nugget. Note that you can use variables in triggering events as well, ex. the triggering event `+gold(X,Y)` will match X and Y to the coordinates of the cell in which the gold nugget was perceived.
+Your third task is to create a `@gold_perceived_plan` in [miner.asl](src/agt/miner.asl) to enable the agent to react when it perceives a new gold nugget. For this task, it is sufficient if the plan correctly triggers when gold is perceived. Note that you can use variables in triggering events as well, ex. the triggering event `+gold(X,Y)` will match X and Y to the coordinates of the cell in which the gold nugget was perceived.
 
 The `@gold_perceived_plan` should only be applicable if the agent is ready to explore (i.e., has the belief `ready_to_explore`) and the agent is not already carrying gold (i.e., does not have the belief `carrying_gold`). To implement such conditions in the plan's application context:
 - you can use _logical and_ (`&`) and _logical or_ (`|`) to specify conjunctions or disjunctions of beliefs that need to hold;
@@ -216,7 +216,7 @@ The `@gold_perceived_plan` should only be applicable if the agent is ready to ex
     
 Currently, the miner agent can perceive gold nuggets but it cannot handle them.
 
-Your fourth task is to complete the `@handle_gold_plan` in [miner.asl](src/agt/miner.asl) to enable the agent to achieve its goal of collecting a perceived gold nugget and delivering it to the depot. The triggering event and the context of the plan are already provided, and there are two available actions that you can use in the plan body:
+Your fourth task is to complete the `@handle_gold_plan` in [miner.asl](src/agt/miner.asl) to enable the agent to achieve its goal of collecting a perceived gold nugget and delivering it to the depot. The triggering event and the context of the plan are already provided, and there are two available operations that you can use in the plan body. Operations are actions that are implemented by the environment. For this task, the environment offers two operations:
     
 - `pick` : collects a gold nugget. The action succeeds if the miner agent is in the position of a gold nugget, e.g. the agent in position (10,8) collects the gold nugget that is perceived in position (10,8);
 - `drop` : drops a gold nugget in the depot. The action succeeds if the miner is carrying gold and is in the position of the depot.
@@ -291,7 +291,7 @@ This will initiate the gold handling process and will eventually generate the tr
 
 The team of miners has elected a leader agent, which is responsible for keeping track of the depot coordinates and periodically moving the depot in the grid environment for security reasons. In the Mining World GUI, observe that the depot is moved to a new position every few seconds. You miner agent remains stuck carrying gold in the initial position of the depot — similar to the stuck Roomba you saw in the first lecture. This is because the initial belief of the miner agent about the depot coordinates (`depot(0,0)`) is outdated, so the agent continues to try and confirm that the known location is indeed the location of the depot (lines 178-183).
 
-Thankfully, agents can communicate with one other to share knowledge about the environment. In AgentSpeack, plan bodies can contain _communication actions_, which allow agents to send messages. For example, the miner agent can perform the action `.send(tell, leader, sunny)` to tell the leader that it is `sunny`. The leader will then acquire a new `sunny` belief — and will also keep note that the miner agent is the source of this new belief.
+Thankfully, agents can communicate with one other to share knowledge about the environment. In AgentSpeack, plan bodies can contain _communication actions_, which allow agents to send messages. For example, the miner agent can perform the action `.send(leader, tell, sunny)` to tell the leader that it is `sunny`. The leader will then acquire a new `sunny` belief — and will also keep note that the miner agent is the source of this new belief.
 
 Your fifth task is to update the `@manage_depot_plan` in [leader.asl](src/agt/leader.asl) such that the leader agent tells the miner agent the new location of the depot every time the leader moves the depot.
 
