@@ -19,8 +19,10 @@ depot(0,0). // the agent believes that the depot is located at (0,0)
 * Body: creates the goal to manage the depot
 */
 @start_plan
-+!start : true <- 
-   !manage_depot. // creation of goal !manage_depot
++!start
+   :  true
+   <- !manage_depot; // creation of goal !manage_depot
+   .
 
 /********* START OF YOUR IMPLEMENTATION FOR TASKS 5 & 6 *********/
 /*
@@ -32,13 +34,15 @@ depot(0,0). // the agent believes that the depot is located at (0,0)
 * 3) informs the miner, and 4) creates the goal to manage the depot again
 */
 @manage_depot_plan
-+!manage_depot : map_size(W,H) <- 
-   .wait(10000); // waits 10000ms
-   jia.random(X,W) ; // action that unifies X with a random number in [0, W]
-   jia.random(Y,H) ; // action that unifies Y with a random number in [0, H]
-   move_depot(X,Y); // action that moves the depot at (X,Y)
-   -+depot(X,Y); // deletes the old belief depot(_,_) and adds a new belief depot(X,Y) 
-   !manage_depot. // creates goal !manage_depot
++!manage_depot
+   :  map_size(W,H)
+   <- .wait(10000); // waits 10000ms
+      jia.random(X,W) ; // action that unifies X with a random number in [0, W]
+      jia.random(Y,H) ; // action that unifies Y with a random number in [0, H]
+      move_depot(X,Y); // action that moves the depot at (X,Y)
+      -+depot(X,Y); // deletes the old belief depot(_,_) and adds a new belief depot(X,Y) 
+      !manage_depot; // creates goal !manage_depot
+   .
 /********* START OF YOUR IMPLEMENTATION FOR TASKS 5 & 6 *********/
 
 /*
@@ -49,9 +53,11 @@ depot(0,0). // the agent believes that the depot is located at (0,0)
 * Body: waits and creates the goal to manage the depot
 */
 @manage_depot_unkown_map_plan
-+!manage_depot : true <- 
-   .wait(100); // waits 100ms
-   !manage_depot. // creates goal !manage_depot
++!manage_depot
+   :  true
+   <- .wait(100); // waits 100ms
+      !manage_depot; // creates goal !manage_depot
+   .
 
 /* Import behavior of agents that work in CArtAgO environments */
 { include("$jacamoJar/templates/common-cartago.asl") }

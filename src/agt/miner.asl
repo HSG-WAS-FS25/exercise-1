@@ -25,9 +25,11 @@ depot(0,0). // the agent believes that the depot is located at (0,0)
  * Body: waits and creates the goal !start 
 */
 @handle_missing_start_plan 
--!start : true <-
-   .wait(2000); // waits 2000ms
-   !start. // creates goal !start (the agent re-tries to !start)
+-!start
+   :  true
+   <- .wait(2000); // waits 2000ms
+      !start; // creates goal !start (the agent re-tries to !start)
+   . 
 
 
 /********* START OF YOUR IMPLEMENTATION FOR TASK 2 *********/
@@ -40,11 +42,13 @@ depot(0,0). // the agent believes that the depot is located at (0,0)
  * Body: computes a random location and creates the goal to explore the route to it 
 */
 @ready_to_explore_plan
-+ready_to_explore : true <-  
-   jia.random(X,20) ; // action that unifies X with a random number in [0, 20]
-   jia.random(Y,20) ; // action that unifies Y with a random number in [0, 20]
-   .print("I will create the goal to explore (",X,",", Y,")");
-   !explore(X,Y) . // creates goal explore(X,Y)
++ready_to_explore
+   :  true
+   <- jia.random(X,20) ; // action that unifies X with a random number in [0, 20]
+      jia.random(Y,20) ; // action that unifies Y with a random number in [0, 20]
+      .print("I will create the goal to explore (",X,",", Y,")");
+      !explore(X,Y); // creates goal explore(X,Y)
+   .
 /********* END OF YOUR IMPLEMENTATION FOR TASK 2 *********/
 
 /* 
@@ -55,10 +59,11 @@ depot(0,0). // the agent believes that the depot is located at (0,0)
  * Body: waits and deletes the old belief ready_to_explore and adds a new belief ready_to_explore
 */
 @ready_to_explore_unknown_map_plan
-+ready_to_explore  : true <- 
-   .wait(100); // waits 100ms
-   -+ready_to_explore. // deletes the old belief ready_to_explore and adds a new belief ready_to_explore
-
++ready_to_explore
+   :  true
+   <- .wait(100); // waits 100ms
+      -+ready_to_explore; // deletes the old belief ready_to_explore and adds a new belief ready_to_explore
+   .
 /********* START OF YOUR IMPLEMENTATION FOR TASK 3 *********/
 // You can add your solution here
 /********* END OF YOUR IMPLEMENTATION FOR TASK 3 *********/
@@ -72,10 +77,12 @@ depot(0,0). // the agent believes that the depot is located at (0,0)
  * Body: deletes any goals for going near any location, and creates the goal to handle the gold
  */
 @init_handle_plan[atomic]
-+!init_handle(gold(X,Y)) : .desire(go_near(_,_)) <- 
-   .print("I will stop moving to handle ", gold(X,Y));
-   .drop_desire(go_near(_,_)); // action that deletes the goal of going near a location
-   !!handle(gold(X,Y)). // creates goal !handle(gold(X,Y))
++!init_handle(gold(X,Y))
+   :  .desire(go_near(_,_))
+   <- .print("I will stop moving to handle ", gold(X,Y));
+      .drop_desire(go_near(_,_)); // action that deletes the goal of going near a location
+      !!handle(gold(X,Y)); // creates goal !handle(gold(X,Y))
+   .
 
 /* 
  * Plan for reacting to the creation of the goal !init_handle(gold(X,Y))
@@ -85,8 +92,10 @@ depot(0,0). // the agent believes that the depot is located at (0,0)
  * Body: creates the goal to handle the gold 
  */
 @init_handle_not_moving_plan[atomic]
-+!init_handle(gold(X,Y)) : true <- 
-   !!handle(Gold). // creates goal !handle(gold(X,Y))
++!init_handle(gold(X,Y))
+   :  true
+   <- !!handle(Gold); // creates goal !handle(gold(X,Y))
+   .
 
 /* 
  * Plan for reacting to creation of goal !handle(gold(X,Y))
@@ -99,13 +108,16 @@ depot(0,0). // the agent believes that the depot is located at (0,0)
  * 5) confirms that reaching the depot was successfully, 6) drops the nugget at the depot, 
  * and 7) chooses another perceived gold to handle
  */
-+!handle(gold(X,Y)) : not ready_to_explore & depot(DepotX,DepotY) <- 
-   .print("Handling ", gold(X,Y), "now");
-   /********* START OF YOUR IMPLEMENTATION FOR TASK 4 *********/
-   // You can add your solution here
-   /********* END OF YOUR IMPLEMENTATION FOR TASK 4 *********/
-   .print("Finish handling ",gold(X,Y));
-   !!choose_gold. // creates goal !choose_gold
++!handle(gold(X,Y))
+   :  not ready_to_explore
+      & depot(DepotX,DepotY)
+   <- .print("Handling ", gold(X,Y), "now");
+      /********* START OF YOUR IMPLEMENTATION FOR TASK 4 *********/
+      // You can add your solution here
+      /********* END OF YOUR IMPLEMENTATION FOR TASK 4 *********/
+      .print("Finish handling ",gold(X,Y));
+      !!choose_gold; // creates goal !choose_gold
+   .
 
 /* 
  * Plan for reacting to the creation of goal !move_to(X,Y)
@@ -115,9 +127,10 @@ depot(0,0). // the agent believes that the depot is located at (0,0)
  * Body: announces that it has reached the location (X,Y)
  */
  @move_to_plan
-+!move_to(X,Y) : current_position(X,Y) <- 
-   .print("I've reached (",X,",",Y,")").
-
++!move_to(X,Y)
+   :  current_position(X,Y)
+   <- .print("I've reached (",X,",",Y,")");
+   .
 /* 
  * Plan for reacting to the creation of goal !move_to(X,Y)
  * The plan is required for confirming that it is in the position of a gold nugget and it is carrying the gold nugget
@@ -126,10 +139,11 @@ depot(0,0). // the agent believes that the depot is located at (0,0)
  * Body: creates the goal to make 1 more step towards (X,Y), and creates goal !move_to(X,Y)
  */
 @move_to_different_location_plan
-+!move_to(X,Y) : not current_position(X,Y) <- 
-   !next_step(X,Y); // creates goal !next_step(X,Y)
-   !move_to(X,Y). // creates a goal !move_to(X,Y)
-
++!move_to(X,Y)
+   :  not current_position(X,Y)
+   <- !next_step(X,Y); // creates goal !next_step(X,Y)
+      !move_to(X,Y); // creates a goal !move_to(X,Y)
+   .
 /* 
  * Plan for reacting to the creation of goal !confirm_pick
  * The plan is required for confirming that the agent is at the location of a gold nugget and 
@@ -139,10 +153,13 @@ depot(0,0). // the agent believes that the depot is located at (0,0)
  * Body: checks if the agent is carrying gold, and deletes the belief that gold is located at (X,Y)
  */
  @confirm_pick_plan
-+!confirm_pick : current_position(X,Y) & gold(X,Y) <- 
-   ?carrying_gold; // tests if the agent is carrying gold
-   .abolish(gold(X,Y)); // deletes the belief that gold is located at (X,Y)
-   .print("Successfully picked gold").
++!confirm_pick
+   :  current_position(X,Y)
+      & gold(X,Y)
+   <- ?carrying_gold; // tests if the agent is carrying gold
+      .abolish(gold(X,Y)); // deletes the belief that gold is located at (X,Y)
+      .print("Successfully picked gold");
+   .
 
 /* 
  * Plan for reacting to the creation of goal !confirm_depot
@@ -152,9 +169,11 @@ depot(0,0). // the agent believes that the depot is located at (0,0)
  * Body: checks if the agent is at the location of the depot, and creates goal !confirm_depot(State) 
  */
 @confirm_depot_plan
-+!confirm_depot : current_position(X,Y) <- 
-   depot_at(X,Y,State);
-   !confirm_depot(State).
++!confirm_depot
+   :  current_position(X,Y)
+   <- depot_at(X,Y,State);
+      !confirm_depot(State);
+   .
 
 /* 
  * Plan for reacting to the creation of goal !confirm_depot(State)
@@ -164,8 +183,10 @@ depot(0,0). // the agent believes that the depot is located at (0,0)
  * Body: announces that is has successfully reached the depot
  */
 @confirm_depot_right_location_plan
-+!confirm_depot(State) : State <- 
-   .print("Successfully reached depot").
++!confirm_depot(State)
+   :  State
+   <- .print("Successfully reached depot");
+   .
 
 /* 
  * Plan for reacting to the deletion of goal !confirm_depot(State)
@@ -176,12 +197,13 @@ depot(0,0). // the agent believes that the depot is located at (0,0)
  * Body: tries to move again to the location of the depot and confirm 
  */
 @confirm_depot_handle_failure_plan
--!confirm_depot(State) : depot(DepotX, DepotY) <- 
-   .print("Confirming depot failed. Retrying to move to depot.");
-   .wait(1500); // waits 1500ms
-   !move_to(DepotX,DepotY); // creates goal !move_to(DepotX,DepotY)
-   !confirm_depot. // creates goal !confirm_depot
-
+-!confirm_depot(State)
+   :  depot(DepotX, DepotY)
+   <- .print("Confirming depot failed. Retrying to move to depot.");
+      .wait(1500); // waits 1500ms
+      !move_to(DepotX,DepotY); // creates goal !move_to(DepotX,DepotY)
+      !confirm_depot; // creates goal !confirm_depot
+   .
 
 /* 
  * Plan for reacting to the deletion of goal !handle(gold(X,Y))
@@ -192,10 +214,12 @@ depot(0,0). // the agent believes that the depot is located at (0,0)
  * chooses another gold nugget to handle
  */
  @handle_gold_handle_failure_plan
--!handle(gold(X,Y)) : gold(X,Y) <- 
-   .print("Handling ",gold(X,Y), " failed.");
-   .abolish(gold(X,Y)); // deletes the belief gold(X,Y)
-   !!choose_gold. // creates goal !choose_gold
+-!handle(gold(X,Y))
+   :  gold(X,Y)
+   <- .print("Handling ",gold(X,Y), " failed.");
+      .abolish(gold(X,Y)); // deletes the belief gold(X,Y)
+      !!choose_gold; // creates goal !choose_gold
+   .
 
 /* 
  * Plan for reacting to the deletion of goal !handle(gold(X,Y))
@@ -205,9 +229,11 @@ depot(0,0). // the agent believes that the depot is located at (0,0)
  * Body: chooses another gold nugget to handle
  */
 @handle_gold_missing_gold_plan
--!handle(gold(X,Y)) : true <- 
-   .print("Handling ",gold(X,Y), " failed.");
-   !!choose_gold. // creates goal !choose_gold
+-!handle(gold(X,Y))
+   :  true
+   <- .print("Handling ",gold(X,Y), " failed.");
+      !!choose_gold; // creates goal !choose_gold
+   .
 
 /* Import behavior of agents that work in CArtAgO environments */
 { include("$jacamoJar/templates/common-cartago.asl") }
