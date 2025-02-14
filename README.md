@@ -216,10 +216,12 @@ The `@gold_perceived_plan` should only be applicable if the agent is ready to ex
     
 Currently, the miner agent can perceive gold nuggets but it cannot handle them.
 
-Your fourth task is to complete the `@handle_gold_plan` in [miner.asl](src/agt/miner.asl#L115) to enable the agent to achieve its goal of collecting a perceived gold nugget and delivering it to the depot. The triggering event and the context of the plan are already provided, and there are two available operations that you can use in the plan body. Operations are actions that are implemented by the environment. For this task, the environment offers two operations:
+Your fourth task is to complete the `@handle_gold_plan` in [miner.asl](src/agt/miner.asl#L115) to enable the agent to achieve its goal of collecting a perceived gold nugget and delivering it to the depot. The triggering event and the context of the plan are already provided, and there are two available actions that you can use in the plan body:
     
 - `pick` : collects a gold nugget. The action succeeds if the miner agent is in the position of a gold nugget, e.g. the agent in position (10,8) collects the gold nugget that is perceived in position (10,8);
 - `drop` : drops a gold nugget in the depot. The action succeeds if the miner is carrying gold and is in the position of the depot.
+
+> Note **(internal vs. external actions)**: The special actions we've seen so far (e.g., .print, jia.random) are called internal actions and are typically used for programming convenience. In contrast, pick and drop are external actions: an action afforded by the environment and executed by an agent's effectors (or actuators). When an agent invokes an external action, it usually affects the environment—and other agents may also perceive it. An external action is what we usually think of as an agent action. External actions are not preceded by a prefix (e.g., jia. or . for the default prefix).
 
 For ensuring the success of the action execution, and therefore the achievement of the goal to handle the gold, the plan body should enable the agent not only to pick and drop, but also to move around the map (ex. to the position of a gold nugget or to the depot), to confirm that a gold nugget was picked up successfully, and to confirm that the agent is in the position of the depot.
 
@@ -361,18 +363,8 @@ Now with your team of miners working at full force, you lay back, relax, and enj
 | :bulb: Your agents are able to achieve their goals in a flexible manner by interleaving proactive, reactive, and social behavior. If you reflect on your agents and their behavior, can you pinpoint concrete examples of such interleaving of behavior?   |
 | :-- |
 
-
 ## Troubleshooting
 
-The JaCaMo console sometimes freezes for MacOS users. A way-out is to disable
-the MAS console (line 7), and enable the java.util.logging.ConsoleHandler
-(line 10) in logging.properties (should be combined with running the 
-application from a console):
+### Frozen MAS console or tutorial GUI on MacOS
 
-```properties
-# default Jason MAS Console
-#handlers = jason.runtime.MASConsoleLogHandler, java.util.logging.FileHandler
-
-# To use the ConsoleHandler, use the following line instead.
-handlers= java.util.logging.ConsoleHandler
-```
+There is a known issue with this tutorial for MacOS users: in _rare occurrences_, when switching between the MAS console and the tutorial GUI, one of them might freeze. If you encounter this issue, we suggest disabling the [MAS console](logging.properties#L7), and enable the [ConsoleHandler](logging.properties#L10). This should be combined with running the application from console.
