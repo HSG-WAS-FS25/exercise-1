@@ -4,7 +4,7 @@
    Gradle build file for JaCaMo Application
 */
 
-defaultTasks 'run'
+defaultTasks 'task_1_4'
 
 apply plugin: 'java'
 
